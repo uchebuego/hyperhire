@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { PriceService } from './services/price/price.service';
-import { PriceFetcherService } from './services/price-fetcher/price-fetcher.service';
+import { PriceService } from './price.service';
 import { AssetsModule } from 'src/assets/assets.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Price } from './entities/price.entity';
 import { PriceController } from './price.controller';
+import { PriceFetcherService } from './price-fetcher/price-fetcher.service';
 
 @Module({
   providers: [PriceService, PriceFetcherService],

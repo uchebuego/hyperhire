@@ -1,8 +1,10 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import BigNumber from 'bignumber.js';
+import { AssetsService } from 'src/assets/assets.service';
 import { Asset } from 'src/assets/entities/asset.entity';
 import { Price } from 'src/price/entities/price.entity';
 import { Repository, MoreThan, LessThanOrEqual } from 'typeorm';
@@ -14,14 +16,23 @@ export class PriceService {
     private priceRepository: Repository<Price>,
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
+    private eventEmitter: EventEmitter2,
+    private assetsServie: AssetsService,
   ) {}
 
   async savePrice(asset: Asset, price: BigNumber): Promise<Price> {
+    asset = await this.assetsServie.findOne(asset);
+
     const newPrice = this.priceRepository.create({
       price,
-      asset: { id: asset.id },
+      asset,
     });
-    return this.priceRepository.save(newPrice);
+
+    const savedPrice = await this.priceRepository.save(newPrice);
+
+    this.eventEmitter.emit('price.updated', savedPrice);
+
+    return savedPrice;
   }
 
   async checkPriceIncreaseAndNotify(asset: Asset): Promise<void> {

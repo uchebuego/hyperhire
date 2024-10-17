@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { PriceService } from '../price/price.service';
 import { AssetsService } from 'src/assets/assets.service';
 import Moralis from 'moralis';
 import { ConfigService } from '@nestjs/config';
 import BigNumber from 'bignumber.js';
+import { PriceService } from '../price.service';
 
 @Injectable()
 export class PriceFetcherService {
