@@ -21,6 +21,7 @@
     "generate:migrations": "npx typeorm migration:generate ./src/db/migrations/pt --dataSource ./dist/db/typeorm.config.js"
   },
   "dependencies": {
+    "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.3",
     "@nestjs/core": "^10.0.0",
@@ -29,7 +30,9 @@
     "@nestjs/schedule": "^4.1.1",
     "@nestjs/typeorm": "^10.0.2",
     "bignumber.js": "^4.0.4",
+    "handlebars": "^4.7.8",
     "moralis": "^2.27.2",
+    "nodemailer": "^6.9.15",
     "pg": "^8.13.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",

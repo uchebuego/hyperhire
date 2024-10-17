@@ -41,9 +41,11 @@ export class PriceFetcherService {
           );
 
           await this.priceService.savePrice(
-            asset.id,
+            asset,
             new BigNumber(response.raw.usdPriceFormatted),
           );
+
+          await this.priceService.checkPriceIncreaseAndNotify(asset);
         } catch (fetchError) {
           this.logger.error(
             `Error fetching price for ${asset.name}:`,
