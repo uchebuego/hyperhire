@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
@@ -22,12 +23,12 @@ export class AssetsController {
 
   @Get()
   findAll() {
-    return this.assetsService.findAll();
+    return this.assetsService.find();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.assetsService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.assetsService.findOne({ id });
   }
 
   @Patch(':id')

@@ -54,6 +54,28 @@ export class PriceService {
     }
   }
 
+  async getHourlyPrices(
+    asset: Asset,
+  ): Promise<{ hour: Date; averagePrice: number }[]> {
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    const hourlyPrices = await this.priceRepository
+      .createQueryBuilder('price')
+      .select("DATE_TRUNC('hour', price.timestamp) AS hour")
+      .addSelect('AVG(CAST(price.price AS float))', 'averagePrice')
+      .where('price.assetId = :assetId', { assetId: asset.id })
+      .andWhere('price.timestamp >= :oneDayAgo', { oneDayAgo })
+      .groupBy("DATE_TRUNC('hour', price.timestamp)")
+      .orderBy('hour', 'ASC')
+      .getRawMany();
+
+    return hourlyPrices.map((entry) => ({
+      hour: new Date(entry.hour),
+      averagePrice: parseFloat(entry.averagePrice),
+    }));
+  }
+
   private async sendPriceIncreaseNotification(
     asset: Asset,
     percentageChange: BigNumber,

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { UpdateAssetDto } from './dto/update-asset.dto';
 import { Asset } from './entities/asset.entity';
@@ -17,14 +17,14 @@ export class AssetsService {
     return this.assetsRepository.save(newAsset);
   }
 
-  async findAll(): Promise<Asset[]> {
-    return this.assetsRepository.find();
+  async find(filter: FindOptionsWhere<Asset> = {}): Promise<Asset[]> {
+    return this.assetsRepository.find({ where: filter });
   }
 
-  async findOne(id: number): Promise<Asset> {
-    const asset = await this.assetsRepository.findOne({ where: { id } });
+  async findOne(filter: FindOptionsWhere<Asset>): Promise<Asset> {
+    const asset = await this.assetsRepository.findOne({ where: filter });
     if (!asset) {
-      throw new NotFoundException(`Asset with ID ${id} not found`);
+      throw new NotFoundException(`Asset  not found`);
     }
     return asset;
   }
@@ -34,13 +34,13 @@ export class AssetsService {
   }
 
   async update(id: number, updateAssetDto: UpdateAssetDto): Promise<Asset> {
-    const asset = await this.findOne(id);
+    const asset = await this.findOne({ id });
     Object.assign(asset, updateAssetDto);
     return this.assetsRepository.save(asset);
   }
 
   async remove(id: number): Promise<void> {
-    const asset = await this.findOne(id);
+    const asset = await this.findOne({ id });
     await this.assetsRepository.remove(asset);
   }
 }

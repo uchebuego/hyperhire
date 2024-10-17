@@ -27,7 +27,7 @@ export class PriceFetcherService {
   @Cron(CronExpression.EVERY_5_MINUTES)
   async fetchPrices() {
     try {
-      const assets = await this.assetsService.findAll();
+      const assets = await this.assetsService.find();
 
       assets.forEach(async (asset) => {
         try {

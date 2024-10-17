@@ -4,9 +4,11 @@ import { PriceFetcherService } from './services/price-fetcher/price-fetcher.serv
 import { AssetsModule } from 'src/assets/assets.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Price } from './entities/price.entity';
+import { PriceController } from './price.controller';
 
 @Module({
   providers: [PriceService, PriceFetcherService],
   imports: [AssetsModule, TypeOrmModule.forFeature([Price])],
+  controllers: [PriceController],
 })
 export class PriceModule {}
