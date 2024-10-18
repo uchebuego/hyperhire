@@ -31,8 +31,6 @@ export class HourlyAlertService {
       order: { timestamp: 'DESC' },
     });
 
-    console.log({ latestPrice, oldPrice });
-
     if (!latestPrice || !oldPrice) {
       return;
     }
