@@ -11,6 +11,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { AlertsModule } from './alerts/alerts.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { SwapModule } from './swap/swap.module';
+import { MoralisModule } from './moralis/moralis.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       }),
     }),
     AlertsModule,
+    SwapModule,
+    MoralisModule,
   ],
   controllers: [AppController],
   providers: [AppService],

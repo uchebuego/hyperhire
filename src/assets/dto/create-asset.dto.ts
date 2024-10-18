@@ -3,4 +3,5 @@ export class CreateAssetDto {
   chainId: string;
   address: string;
   symbol: string;
+  refresh: boolean;
 }

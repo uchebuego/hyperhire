@@ -33,6 +33,10 @@ export class AssetsService {
     return this.assetsRepository.findOne({ where: { name } });
   }
 
+  async findBySymbol(symbol: string): Promise<Asset | undefined> {
+    return this.assetsRepository.findOne({ where: { symbol } });
+  }
+
   async update(id: number, updateAssetDto: UpdateAssetDto): Promise<Asset> {
     const asset = await this.findOne({ id });
     Object.assign(asset, updateAssetDto);

@@ -16,4 +16,7 @@ export class Asset {
 
   @Column()
   address: string;
+
+  @Column({ default: false })
+  refresh: boolean;
 }

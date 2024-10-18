@@ -1,48 +1,40 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AssetsService } from 'src/assets/assets.service';
-import Moralis from 'moralis';
 import { ConfigService } from '@nestjs/config';
 import BigNumber from 'bignumber.js';
 import { PriceService } from '../price.service';
+import { MoralisService } from 'src/moralis/moralis.service';
 
 @Injectable()
 export class PriceFetcherService {
   private readonly logger: Logger;
-  private readonly moralisApiKey: string;
 
   constructor(
     private readonly priceService: PriceService,
     private readonly assetsService: AssetsService,
     private readonly configService: ConfigService,
+    private readonly moralisService: MoralisService,
   ) {
-    this.moralisApiKey = this.configService.get('MORALIS_API_KEY');
     this.logger = new Logger(PriceFetcherService.name);
-
-    Moralis.start({ apiKey: this.moralisApiKey }).then(() => {
-      this.logger.log('Moralis Initialised');
-    });
   }
 
   @Cron(CronExpression.EVERY_5_MINUTES)
   async fetchPrices() {
     try {
-      const assets = await this.assetsService.find();
+      const assets = await this.assetsService.find({ refresh: true });
 
       assets.forEach(async (asset) => {
         try {
-          const response = await Moralis.EvmApi.token.getTokenPrice({
-            chain: asset.chainId,
-            address: asset.address,
-          });
+          const priceData = await this.moralisService.getPrice(asset);
 
           this.logger.log(
-            `${asset.name} - ${response.raw.usdPriceFormatted} - ${new Date().toISOString()}`,
+            `${asset.name} - ${priceData.usdPriceFormatted} - ${new Date().toISOString()}`,
           );
 
           await this.priceService.savePrice(
             asset,
-            new BigNumber(response.raw.usdPriceFormatted),
+            new BigNumber(priceData.usdPriceFormatted),
           );
 
           await this.priceService.checkPriceIncreaseAndNotify(asset);
