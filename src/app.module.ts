@@ -17,6 +17,8 @@ import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
+    SwapModule,
+    AlertsModule,
     PriceModule,
     AssetsModule,
     ScheduleModule.forRoot(),
@@ -39,8 +41,6 @@ import { MailModule } from './mail/mail.module';
         },
       }),
     }),
-    AlertsModule,
-    SwapModule,
     MoralisModule,
     MailModule,
   ],

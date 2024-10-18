@@ -15,10 +15,10 @@ export class AlertsService {
   ) {}
 
   async create(createAlertDto: CreateAlertDto): Promise<Alert> {
-    const { assetId, targetPrice, email } = createAlertDto;
-    const asset = await this.assetsService.findOne({ id: assetId });
+    const { assetSymbol, targetPrice, email } = createAlertDto;
+    const asset = await this.assetsService.findOne({ symbol: assetSymbol });
     if (!asset) {
-      throw new NotFoundException(`Asset with ID ${assetId} not found`);
+      throw new NotFoundException(`Asset with ID ${assetSymbol} not found`);
     }
 
     const newAlert = this.alertsRepository.create({

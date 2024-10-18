@@ -2,7 +2,10 @@ import { Controller, Get, Param } from '@nestjs/common';
 import { SwapService } from './swap.service';
 import { AssetsService } from 'src/assets/assets.service';
 import BigNumber from 'bignumber.js';
+import { ApiTags } from '@nestjs/swagger';
+import { SwapParamsDto } from './dto/swap-params.dto';
 
+@ApiTags('Swap')
 @Controller('swap')
 export class SwapController {
   constructor(
@@ -11,22 +14,18 @@ export class SwapController {
   ) {}
 
   @Get(':source/:target/:amount')
-  async swapBtc(
-    @Param('source') source: string,
-    @Param('target') target: string,
-    @Param('amount') amount: string,
-  ) {
+  async swapBtc(@Param() params: SwapParamsDto) {
     const ethAsset = await this.assetsService.findBySymbol(
-      source.toUpperCase(),
+      params.source.toUpperCase(),
     );
     const btcAsset = await this.assetsService.findBySymbol(
-      target.toUpperCase(),
+      params.target.toUpperCase(),
     );
 
     return this.swapService.getSwapRate(
       ethAsset,
       btcAsset,
-      new BigNumber(amount),
+      new BigNumber(params.amount),
     );
   }
 }

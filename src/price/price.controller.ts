@@ -1,7 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
 import { PriceService } from './price.service';
 import { AssetsService } from 'src/assets/assets.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Prices')
 @Controller('prices')
 export class PriceController {
   constructor(
@@ -16,12 +18,18 @@ export class PriceController {
     const pricesEntries = await Promise.all(
       assets.map(async (asset) => {
         const hourlyPrices = await this.priceService.getHourlyPrices(asset);
-        return [asset.symbol, hourlyPrices] as const;
+
+        const formattedPrices = hourlyPrices.map((price) => ({
+          hour: price.hour.toISOString(),
+          averagePrice: price.averagePrice,
+        }));
+
+        return [asset.symbol, formattedPrices] as const;
       }),
     );
 
     const pricesByAssetName = Object.fromEntries(pricesEntries);
 
-    return pricesByAssetName;
+    return { assets: pricesByAssetName };
   }
 }
