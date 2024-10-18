@@ -11,10 +11,10 @@ export class Asset {
   @Column()
   chainId: string;
 
-  @Column()
+  @Column({ unique: true })
   symbol: string;
 
-  @Column()
+  @Column({ unique: true })
   address: string;
 
   @Column({ default: false })
