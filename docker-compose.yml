@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nestjs
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nest-net
+
+  app:
+    build: .
+    command: yarn start
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: nestjs
+      MAIL_TRANSPORT: smtps://user@domain.com:pass@smtp.domain.com
+      MAIL_RECIPIENT: hyperhire_assignment@hyperhire.in
+      MORALIS_API_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImZlYzRhZWM3LTExODYtNGFjMi05ZDQxLWY0YWM2ZjU2NTNjNyIsIm9yZ0lkIjoiNDEyMTQ3IiwidXNlcklkIjoiNDIzNTQ1IiwidHlwZUlkIjoiZjExYWE3ZGMtOTA0OS00NmQ4LWJhNzgtZmMzYzMwN2QzNjljIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3MjkxNzEyODgsImV4cCI6NDg4NDkzMTI4OH0.tjsOkNEXMfiQeokaBlY18Y3RxD6EE_Fw--MK72-opX8
+    depends_on:
+      - postgres
+    networks:
+      - nest-net
+
+networks:
+  nest-net:
+
+volumes:
+  postgres_data:
