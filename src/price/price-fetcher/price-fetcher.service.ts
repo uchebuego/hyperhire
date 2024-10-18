@@ -36,8 +36,6 @@ export class PriceFetcherService {
             asset,
             new BigNumber(priceData.usdPriceFormatted),
           );
-
-          await this.priceService.checkPriceIncreaseAndNotify(asset);
         } catch (fetchError) {
           this.logger.error(
             `Error fetching price for ${asset.name}:`,

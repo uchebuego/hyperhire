@@ -10,6 +10,7 @@ import { MoralisModule } from 'src/moralis/moralis.module';
 @Module({
   providers: [PriceService, PriceFetcherService],
   imports: [AssetsModule, TypeOrmModule.forFeature([Price]), MoralisModule],
+  exports: [PriceService],
   controllers: [PriceController],
 })
 export class PriceModule {}

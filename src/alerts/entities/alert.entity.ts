@@ -1,12 +1,10 @@
 import { Asset } from 'src/assets/entities/asset.entity';
-import { Price } from 'src/price/entities/price.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
   CreateDateColumn,
-  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -14,7 +12,7 @@ export class Alert {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Asset)
+  @ManyToOne(() => Asset, { eager: true })
   asset: Asset;
 
   @Column('decimal')
@@ -28,7 +26,4 @@ export class Alert {
 
   @Column({ default: false })
   isTriggered: boolean;
-
-  @OneToMany(() => Price, (price) => price.asset, { eager: true })
-  prices: Price[];
 }

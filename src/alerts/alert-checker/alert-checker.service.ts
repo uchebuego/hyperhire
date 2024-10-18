@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { AlertsService } from '../alerts.service';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Price } from 'src/price/entities/price.entity';
-import { MailerService } from '@nestjs-modules/mailer';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AlertCheckerService {
@@ -10,7 +10,7 @@ export class AlertCheckerService {
 
   constructor(
     private readonly alertsService: AlertsService,
-    private readonly mailerService: MailerService,
+    private readonly mailService: MailService,
   ) {}
 
   @OnEvent('price.updated')
@@ -20,20 +20,27 @@ export class AlertCheckerService {
       asset: { id: price.asset.id },
     });
 
-    for (const alert of alerts) {
-      if (price.price.greaterThanOrEqualTo(alert.targetPrice)) {
-        await this.alertsService.update(alert.id, { isTriggered: true });
+    await Promise.all(
+      alerts.map(async (alert) => {
+        try {
+          if (price.price.greaterThanOrEqualTo(alert.targetPrice)) {
+            await this.alertsService.update(alert.id, { isTriggered: true });
 
-        this.logger.log(
-          `Alert triggered for ${alert.asset.name} at price ${alert.targetPrice}`,
-        );
+            this.logger.log(
+              `Alert triggered for ${alert.asset.name} at price ${alert.targetPrice}`,
+            );
 
-        await this.mailerService.sendMail({
-          to: alert.email,
-          subject: 'Price Alert Triggered',
-          text: `The price of ${alert.asset.name} has reached ${alert.targetPrice}.`,
-        });
-      }
-    }
+            await this.mailService.send(
+              alert.email,
+              'Price Alert Triggered',
+              'scheduled-alert',
+              { alert },
+            );
+          }
+        } catch (e) {
+          this.logger.error(e);
+        }
+      }),
+    );
   }
 }

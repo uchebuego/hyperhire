@@ -13,7 +13,7 @@ export class Price {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Asset)
+  @ManyToOne(() => Asset, { eager: true })
   asset: Asset;
 
   @Column('varchar', {

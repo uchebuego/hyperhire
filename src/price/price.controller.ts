@@ -11,7 +11,7 @@ export class PriceController {
 
   @Get()
   async getHourlyPrices() {
-    const assets = await this.assetsService.find();
+    const assets = await this.assetsService.find({ refresh: true });
 
     const pricesEntries = await Promise.all(
       assets.map(async (asset) => {

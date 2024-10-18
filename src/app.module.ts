@@ -13,6 +13,7 @@ import { AlertsModule } from './alerts/alerts.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SwapModule } from './swap/swap.module';
 import { MoralisModule } from './moralis/moralis.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { MoralisModule } from './moralis/moralis.module';
     AlertsModule,
     SwapModule,
     MoralisModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
