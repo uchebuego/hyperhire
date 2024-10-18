@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { Asset } from 'src/assets/entities/asset.entity';
 import {
   Entity,
@@ -15,8 +16,13 @@ export class Alert {
   @ManyToOne(() => Asset, { eager: true })
   asset: Asset;
 
-  @Column('decimal')
-  targetPrice: number;
+  @Column('varchar', {
+    transformer: {
+      from: (value: string) => new BigNumber(value),
+      to: (value: BigNumber) => value.toString(),
+    },
+  })
+  targetPrice: BigNumber;
 
   @Column()
   email: string;
